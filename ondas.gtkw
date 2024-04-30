@@ -1,0 +1,38 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri Apr 12 13:32:57 2024
+[*]
+[dumpfile] "/home/yo/Downloads/B95916/resultados.vcd"
+[dumpfile_mtime] "Fri Apr 12 13:30:37 2024"
+[dumpfile_size] 2466
+[savefile] "/home/yo/Downloads/B95916/ondas.gtkw"
+[timestart] 0
+[size] 1850 890
+[pos] -51 -51
+*-5.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] controlador_tb.
+[sst_width] 233
+[signals_width] 150
+[sst_expanded] 1
+[sst_vpaned_height] 245
+@28
+controlador_tb.U0.Clk
+@29
+controlador_tb.U0.Reset
+@28
+controlador_tb.U0.Abierto
+controlador_tb.U0.Alarma
+controlador_tb.U0.Bloqueo
+controlador_tb.U0.Cerrado
+@22
+controlador_tb.U0.Pin[7:0]
+@28
+controlador_tb.U0.enterPin
+controlador_tb.U0.Termino
+controlador_tb.U0.Vehiculo
+controlador_tb.U0.count0[1:0]
+controlador_tb.U0.nxt_count0[1:0]
+controlador_tb.U0.state[2:0]
+controlador_tb.U0.nxt_state[2:0]
+[pattern_trace] 1
+[pattern_trace] 0
