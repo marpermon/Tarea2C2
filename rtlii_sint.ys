@@ -1,13 +1,17 @@
-# read design 
 read_verilog controlador.v
 
-# elaborate design hierarchy
 hierarchy -check -top controlador
 
-# the high-level stuff
 proc; opt; fsm; opt; memory; opt
 
-# mapping to internal cell library
-techmap; opt; show -format svg
+techmap; opt; show
 
-write_verilog sinte_rtlil.v
+dfflibmap -liberty ./cmos_cells.lib
+
+abc -liberty ./cmos_cells.lib
+
+show
+
+write_verilog sint_comp.v
+
+clean

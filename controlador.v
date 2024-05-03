@@ -20,9 +20,7 @@ reg [2:0] state;
 reg [2:0] nxt_state;//mal
 reg [1:0] count0; 
 reg [1:0] nxt_count0;
-wire pin_ok; //la salida de un assign siempre es un wire   
-wire count3;
-
+           
 // Asignación de estados
 //parametros para usarlos como variables
 //intenta cambiar 0 por ?
@@ -43,43 +41,49 @@ always @(posedge Clk) begin
     count0 <= nxt_count0;  
   end
 end 
-assign pin_ok=(Pin==Pin_correcto);
-assign count3=(count0>=3);
 
 //logica combinacional
 always @(*) begin
   //por defecto
   nxt_state = state;  
   nxt_count0 = count0;
-  /*Cerrado=1'b1; //arreglo de error en sìntesis
+  Cerrado=1'b1; //arreglo de error en sìntesis
   Abierto=1'b0;
   Alarma=1'b0;
-  Bloqueo=1'b0;*/
+  Bloqueo=1'b0;
 
   case (state)
-    C_Cerrada: begin //si empezamos con la compuerta cerrada
+    3'b001: begin //si empezamos con la compuerta cerrada
         Cerrado=1'b1; //output
         Abierto=1'b0;
         Alarma=1'b0;
         Bloqueo=1'b0;
-        case ({Vehiculo, enterPin, pin_ok, Termino, count3})
-          5'b110?0: begin
-              nxt_state = C_Cerrada;
-              nxt_count0 = count0+1;
+        if (Vehiculo) begin
+          if (enterPin) begin
+            if (Pin==Pin_correcto) begin
+              nxt_state = C_Abierta; //si hay v y el pin es correcto
+              nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
             end
-          5'b110?1: begin
-              nxt_state = C_Cerrada;
-              Alarma=1'b1;
+                
+            else begin
+              if (count0<3) begin
+                  nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
+                  nxt_count0 = count0+1;
+                end
+              else begin
+                  nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es 2, significa que este el el tercer fallo
+                  Alarma=1'b1; //output
+                  //no sumamos mas porque no es necesario
+                end 
+              end   
             end
-          /*5'b????1: begin
-              nxt_state = C_Cerrada;
-              Alarma=1'b1;
-            end*/
-          5'b0????: nxt_state = C_Cerrada;
-          5'b10???: nxt_state = C_Cerrada;
-          5'b111??: nxt_state = C_Abierta;
-    
-        endcase
+          else begin
+            if (count0>=3) Alarma=1'b1;
+          end
+          //si no se ha dado enter, no hacer nada, porque no se ha ingresado nada
+          //a menos que el contador sea 3, ahí encendemos la alarma
+        end
+        //no hay else porque si no hay v, la compuerta sigue cerrada
       end
 
     3'b010: 	begin
@@ -88,31 +92,30 @@ always @(*) begin
       Alarma=1'b0;
       Bloqueo=1'b0;
       nxt_count0 = 2'b00; //cuando se abre la puerta se limpia el contador*
-      case ({Vehiculo, enterPin, pin_ok, Termino, count3})
-          5'b1??1?: begin
-              nxt_state = C_Bloqueada;
-              Cerrado=1'b1;
-            end
-          5'b???0?: nxt_state = C_Abierta;
-          5'b0??1?: begin
-              nxt_state = C_Cerrada;
-              Cerrado=1'b1;
-            end
-
-      endcase
-      end
+      if (Termino)
+        begin
+          Abierto=1'b0; 
+          Cerrado=1'b1; //cerramos la puerta  
+          begin
+            if(Vehiculo) nxt_state = C_Bloqueada;//si termino de entrar y hay vehiculo AL MISMO TIEMPO
+            else nxt_state = C_Cerrada;//si termino de entrar y no hay vehiculo
+          end
+        end
+        // no hay else porque si no ha terminado de entrar, la compuerta sigue abierta
+    end
 
     3'b100: begin
       Cerrado=1'b0; //output
       Abierto=1'b0;
       Alarma=1'b1;
       Bloqueo=1'b1; 
-      case ({Vehiculo, enterPin, pin_ok, Termino, count3})
-          5'b?11??: nxt_state= C_Abierta;
-          5'b?0???: nxt_state = C_Bloqueada;
-          5'b?10??: nxt_state = C_Bloqueada;
-          
-      endcase
+      if (enterPin) begin
+        if (Pin==Pin_correcto) begin 
+          nxt_state = C_Abierta; //si el pin es correcto se abre la puerta
+          nxt_count0 = 2'b00; 
+        end
+      end  
+      // no hay else porque, si el pin no es correcto, sigue bloqueada
     end
     default nxt_state = state;
   endcase  
