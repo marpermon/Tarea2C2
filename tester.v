@@ -21,8 +21,8 @@ parameter medio_T = 20;
     enterPin = 0;
     Pin=Pin_0;
     
-    #20 Reset = 1; //5. reseteamos la máquina
-    #40 Reset = 0; //15.
+    #20 Reset = 1; //. reseteamos la máquina
+    #40 Reset = 0; //.
     //*Prueba 1: funcionamiento normal*
     #20 Vehiculo = 1; //llega vehiculo
     #60 {enterPin,Pin}  = 9'b100000000+Pin_correcto;

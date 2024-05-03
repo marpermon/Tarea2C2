@@ -1,7 +1,7 @@
 //incluimos los archivos de tester y  controlador
-`include "cmos_cells.v"
+`include "cmos_cells.v" //archivo compuertas
 `include "tester.v"
-`include "sint_comp.v"
+`include "sint_comp.v" //archivo sintetizado
                                         
 //modulo del testbench
 module controlador_tb;
